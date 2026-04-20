@@ -6,8 +6,13 @@ def create_app():
     app = Flask(__name__)
     app.config.from_object('config.Config')
     
-    # Enable CORS for React frontend
-    CORS(app, origins=["http://localhost:3000"])
+    # Enable CORS for React frontend - allow production URLs
+    cors_origins = ["http://localhost:3000"]  # Development
+    if not app.config.get('DEBUG'):
+        # Add production frontend URL when deployed
+        cors_origins.append("https://your-frontend-domain.com")  # Replace with your actual frontend URL
+    
+    CORS(app, origins=cors_origins)
     
     if app.config.get('DEBUG'):
         print("?? Development mode: Authentication will be bypassed if no token provided")
